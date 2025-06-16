@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Meine Firmware</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-light: #4895ef;
+            --secondary: #3f37c9;
+            --text-dark: #212529;
+            --text-light: #f8f9fa;
+            --background: #f8f9fa;
+            --gray-light: #e9ecef;
+            --gray: #adb5bd;
+            --success: #52b788;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+        
+        body {
+            background-color: var(--background);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+          /* flex-direction: column; */
+            align-items: center;
+            justify-content: center;
+            padding: 0px;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: white;
+            border-radius: 0px;    /* 13px */
+            box-shadow: none;           /* 0 10px 30px rgba(0, 0, 0, 0.1)  */
+
+            padding: 30px;
+            margin: 0; /* 20px */
+            transition: all 0.3s ease;
+        }
+        
+        h1 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        h2 {
+            color: var(--secondary);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        
+        p {
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .intro-section p {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            cursor: pointer;
+        }
+        
+        .checkbox-container input {
+            margin-right: 10px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: block;
+            margin: 20px auto;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: var(--primary-light);
+        }
+        
+        .btn:disabled {
+            background-color: var(--gray);
+            cursor: not-allowed;
+        }
+        
+        .question-section {
+            display: none;
+        }
+        
+        .question {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        
+        .options {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        .option {
+            background-color: white;
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            padding: 15px 25px;
+            cursor: pointer;
+            width: 48%;
+            text-align: center;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background-color: var(--gray-light);
+        }
+        
+        .option.selected {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 10px;
+            background-color: var(--gray-light);
+            border-radius: 10px;
+            margin: 30px 0 10px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .progress-text {
+            text-align: right;
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-bottom: 20px;
+        }
+        
+        .results-section {
+            display: none;
+        }
+        
+        .chart-container {
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        
+        .bar-chart {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .bar-group {
+            display: flex;
+            align-items: center;
+        }
+        
+        .bar-label {
+            width: 30px;
+            font-weight: bold;
+            text-align: center;
+            margin-right: 15px;
+        }
+        
+        .bar-outer {
+            flex-grow: 1;
+            background-color: var(--gray-light);
+            height: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .bar-inner {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0%;
+            transition: width 1s ease;
+            position: relative;
+        }
+        
+        .bar-value {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-dark);
+            font-weight: bold;
+        }
+        
+        .scale {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+            padding: 0 30px 0 45px;
+            color: var(--gray);
+            font-size: 0.8rem;
+        }
+        
+        .call-to-action {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            background-color: var(--gray-light);
+            border-radius: 8px;
+        }
+        
+        .call-to-action h3 {
+            color: var(--secondary);
+            margin-bottom: 10px;
+        }
+        
+        .pulsing {
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .option {
+                padding: 12px 15px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container intro-section" id="intro">
+        <h1>Test Meine Firmware</h1>
+        <p>Dieser Persönlichkeitstest hilft Ihnen, Ihre charakteristischen Züge besser zu verstehen.</p>
+        <p>Die Fragen sollten spontan und ehrlich beantwortet werden, um ein richtiges Ergebnis zu erhalten.</p>
+        <div class="checkbox-container">
+            <input type="checkbox" id="understand-checkbox">
+            <label for="understand-checkbox">Ich habe die Anleitung verstanden und bin bereit, den Test zu starten.</label>
+        </div>
+        <button class="btn" id="start-btn">Test starten</button>
+    </div>
+    
+    <div class="container question-section" id="question-container">
+        <h2>Frage <span id="current-question">1</span> von <span id="total-questions">60</span></h2>
+        <p class="question" id="question-text"></p>
+        <div class="options">
+            <div class="option" data-value="stimmt">Stimmt</div>
+            <div class="option" data-value="stimmt-nicht">Stimmt nicht</div>
+        </div>
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <div class="progress-text"><span id="progress-percentage">0</span>% abgeschlossen</div>
+    </div>
+    
+    <div class="container results-section" id="results">
+        <h1>Ihre Persönlichkeits-Auswertung</h1>
+        <p>Basierend auf Ihren Antworten haben wir folgendes Profil erstellt:</p>
+        
+        <div class="chart-container">
+            <div class="bar-chart">
+                <div class="bar-group">
+                    <div class="bar-label">X</div>
+                    <div class="bar-outer">
+                        <div class="bar-inner" id="x-bar"></div>
+                        <div class="bar-value" id="x-value">0</div>
+                    </div>
+                </div>
+                <div class="bar-group">
+                    <div class="bar-label">Y</div>
+                    <div class="bar-outer">
+                        <div class="bar-inner" id="y-bar"></div>
+                        <div class="bar-value" id="y-value">0</div>
+                    </div>
+                </div>
+                <div class="bar-group">
+                    <div class="bar-label">Z</div>
+                    <div class="bar-outer">
+                        <div class="bar-inner" id="z-bar"></div>
+                        <div class="bar-value" id="z-value">0</div>
+                    </div>
+                </div>
+                <div class="bar-group">
+                    <div class="bar-label">R</div>
+                    <div class="bar-outer">
+                        <div class="bar-inner" id="r-bar"></div>
+                        <div class="bar-value" id="r-value">0</div>
+                    </div>
+                </div>
+                <div class="bar-group">
+                    <div class="bar-label">S</div>
+                    <div class="bar-outer">
+                        <div class="bar-inner" id="s-bar"></div>
+                        <div class="bar-value" id="s-value">0</div>
+                    </div>
+                </div>
+                <div class="bar-group">
+                    <div class="bar-label">T</div>
+                    <div class="bar-outer">
+                        <div class="bar-inner" id="t-bar"></div>
+                        <div class="bar-value" id="t-value">0</div>
+                    </div>
+                </div>
+            </div>
+            <div class="scale">
+                <span>0</span>
+                <span>1</span>
+                <span>2</span>
+                <span>3</span>
+                <span>4</span>
+                <span>5</span>
+                <span>6</span>
+                <span>7</span>
+                <span>8</span>
+                <span>9</span>
+                <span>10</span>
+            </div>
+        </div>
+        
+        <div class="call-to-action pulsing">
+            <h3>Möchten Sie mehr über Ihre Ergebnisse erfahren?</h3>
+            <p>Buchen Sie eine persönliche Beratung, um eine detaillierte Erklärung Ihres Persönlichkeitsprofils zu erhalten.</p>
+            <button class="btn">Beratung buchen</button>
+        </div>
+    </div>
+
+    <script>
+        // Define the questions and their assigned categories
+        const questions = [
+            { id: 1, text: "Junge Menschen haben es viel zu einfach.", category: "Y" },
+            { id: 2, text: "Mir ist es sehr wichtig Dinge perfekt zu erledigen.", category: "R" },
+            { id: 3, text: "Wer behauptet, der Klügere gibt nach, muss ein Feigling sein.", category: "T" },
+            { id: 4, text: "Ich versuche immer meinen Kopf durchzusetzen.", category: "T" },
+            { id: 5, text: "Die Gesellschaft wäre sicherlich besser bedient, wenn die Menschen nach der Regel der Goldenen Mitte leben würden.", category: "Z" },
+            { id: 6, text: "Ich bin gerne lustig und verspielt.", category: "S" },
+            { id: 7, text: "Ich habe eindeutige Vorstellungen von richtig und falsch. Ich bleibe jedoch neuen Ideen gegenüber aufgeschlossen.", category: "X" },
+            { id: 8, text: "Mir fällt es oft schwer Fehler einzusehen und zuzugeben.", category: "T" },
+            { id: 9, text: "Zeige mir deine Kleidung und ich sage dir, ob ich dich anstelle.", category: "Y" },
+            { id: 10, text: "Wenn ich anderen Menschen helfe ihr Talent auszuschöpfen, bin ich sehr zufrieden.", category: "Z" },
+            { id: 11, text: "Ich verliere oft die Geduld und bin ein ungestümer Mensch.", category: "S" },
+            { id: 12, text: "Ich gerate nur selten aus der Fassung.", category: "X" },
+            { id: 13, text: "Ich gehe ungern allein zu Veranstaltungen oder in Restaurants.", category: "R" },
+            { id: 14, text: "Ich bilde mich sehr gerne weiter.", category: "X" },
+            { id: 15, text: "Mit Menschen, die mich enttäuscht haben, will ich nichts mehr zu tun haben.", category: "T" },
+            { id: 16, text: "Für die hilfebedürftigen der Welt wird viel zu wenig getan.", category: "Z" },
+            { id: 17, text: "Dinge, die mir gefallen, möchte ich so schnell wie möglich haben.", category: "S" },
+            { id: 18, text: "Ich ignoriere Befehle und mache das Gegenteil.", category: "T" },
+            { id: 19, text: "Wenn jemand krank ist, bin ich fürsorglich und wohlwollend.", category: "Z" },
+            { id: 20, text: "Arbeit hat noch niemand geschadet.", category: "Y" },
+            { id: 21, text: "Mir fällt es oft schwer Autorität zu akzeptieren.", category: "S" },
+            { id: 22, text: "Wenn ich an die Zukunft denke, habe ich oft Angst.", category: "R" },
+            { id: 23, text: "Respektvolles Benehmen gegenüber Übergeordneten ist immer besser.", category: "R" },
+            { id: 24, text: "Die meisten Menschen, die keine Arbeit haben, bemühen sich zu wenig darum Arbeit zu bekommen.", category: "Y" },
+            { id: 25, text: "Ich habe es satt, mir Befehle geben zu lassen.", category: "T" },
+            { id: 26, text: "Jeder muss selbst wissen, was er tut. Ich zwinge niemand meine Meinung auf.", category: "X" },
+            { id: 27, text: "Es fällt mir schwer, mich für Alternativen zu entscheiden.", category: "R" },
+            { id: 28, text: "Ich weiß immer, was ich sage, sage jedoch nicht immer, was ich meine.", category: "X" },
+            { id: 29, text: "Lachen ist immer noch die beste Medizin für mich.", category: "S" },
+            { id: 30, text: "Lügen haben kurze Beine.", category: "Y" },
+            { id: 31, text: "Ich bin mit anderen sehr verständnisvoll und nachsichtig.", category: "Z" },
+            { id: 32, text: "Regeln sind dazu da, beachtet zu werden.", category: "Y" },
+            { id: 33, text: "Wenn ich Menschen mag, zeige ich es herzlich.", category: "S" },
+            { id: 34, text: "Ich weiß nicht, warum ich mit anderen Nachsichtig sein soll.", category: "T" },
+            { id: 35, text: "Ordnung muss sein.", category: "Y" },
+            { id: 36, text: "Kinder darf man sinnvoll verwöhnen.", category: "Z" },
+            { id: 37, text: "Wenn mir etwas nicht klar ist, frage ich so lange, bis es mir klar ist.", category: "X" },
+            { id: 38, text: "Ich rede gerne oft vor vielen Menschen und fühle mich wohl dabei.", category: "X" },
+            { id: 39, text: "Es fällt mir leicht, meine Freude anderen zu zeigen.", category: "S" },
+            { id: 40, text: "Wenn ich einsehe, dass ich bei meinen Überlegungen von falschen Voraussetzungen ausgegangen bin, ändere ich meine Meinung.", category: "X" },
+            { id: 41, text: "Ich spiele gerne und oft mit den Spielsachen von (meinen) Kindern.", category: "S" },
+            { id: 42, text: "Auch wenn ich eine Meinung nicht teile, respektiere ich sie.", category: "X" },
+            { id: 43, text: "Ich finde mich leicht in neuen Umgebungen zurecht.", category: "X" },
+            { id: 44, text: "Ich bin sehr häufig spontan und intuitiv.", category: "S" },
+            { id: 45, text: "Man sollte rücksichtsvoller miteinander umgehen.", category: "Z" },
+            { id: 46, text: "„Liebe deinen nächsten wie dich selbst hat schon seine Bedeutung.", category: "Z" },
+            { id: 47, text: "In unklaren Situationen fühle ich mich hilflos.", category: "R" },
+            { id: 48, text: "Ich bin sehr offen und muss meine Gefühle nicht verbergen.", category: "S" },
+            { id: 49, text: "Endlose Diskussionen sind eine Katastrophe.", category: "T" },
+            { id: 50, text: "Menschen in Schwierigkeiten fragen mich oft nach Rat und Hilfe.", category: "Z" },
+            { id: 51, text: "Ich übernehme oft Führung, weil ich schnell weiß, was zu tun ist.", category: "Y" },
+            { id: 52, text: "Ich bin bemüht den Erwartungen anderer Menschen zu entsprechen.", category: "R" },
+            { id: 53, text: "Im Umgang mit Beamten fühle ich mich hilf- und machtlos.", category: "R" },
+            { id: 54, text: "Hin und wieder kann ich sehr trotzig sein.", category: "T" },
+            { id: 55, text: "Ich übernehme gerne die Aufgaben anderer, mit denen sie nicht klarkommen.", category: "Z" },
+            { id: 56, text: "Bei einer Fahrausweiskontrolle keinen gültigen Fahrschein zu haben, wäre mir sehr unangenehm.", category: "R" },
+            { id: 57, text: "Am liebsten würde ich alles hinwerfen und auswandern", category: "T" },
+            { id: 58, text: "Ich habe feste Ansichten, die ich nur wenig verändere.", category: "Y" },
+            { id: 59, text: "Manchmal kaufe ich nur etwas, weil der Verkäufer sich so viel Mühe gegeben hat.", category: "R" },
+            { id: 60, text: "Tradition und Bräuche sind mir sehr wichtig.", category: "Y" }
+        ];
+
+        // Variables
+        let currentQuestionIndex = 0;
+        const totalQuestions = questions.length;
+        let answers = {};
+        let categoryCounts = {
+            'X': 0,
+            'Y': 0,
+            'Z': 0,
+            'R': 0,
+            'S': 0,
+            'T': 0
+        };
+
+        // Elements
+        const understandCheckbox = document.getElementById('understand-checkbox');
+        const startBtn = document.getElementById('start-btn');
+        const introSection = document.getElementById('intro');
+        const questionContainer = document.getElementById('question-container');
+        const questionText = document.getElementById('question-text');
+        const currentQuestionSpan = document.getElementById('current-question');
+        const totalQuestionsSpan = document.getElementById('total-questions');
+        const progressBar = document.getElementById('progress-bar');
+        const progressPercentage = document.getElementById('progress-percentage');
+        const options = document.querySelectorAll('.option');
+        const resultsSection = document.getElementById('results');
+
+        // Update total questions display
+        totalQuestionsSpan.textContent = totalQuestions;
+
+        // Initialize the start button based on checkbox state
+        understandCheckbox.addEventListener('change', function() {
+            startBtn.disabled = !this.checked;
+            // Update button styling to reflect disabled state
+            if (this.checked) {
+                startBtn.style.backgroundColor = 'var(--primary)';
+                startBtn.style.cursor = 'pointer';
+            } else {
+                startBtn.style.backgroundColor = 'var(--gray)';
+                startBtn.style.cursor = 'not-allowed';
+            }
+        });
+
+        // Start the test button click handler
+        startBtn.addEventListener('click', function() {
+            if (!understandCheckbox.checked) {
+                alert("Bitte bestätigen Sie, dass Sie die Anleitung verstanden haben.");
+                return;
+            }
+            
+            introSection.style.display = 'none';
+            questionContainer.style.display = 'block';
+            showQuestion(currentQuestionIndex);
+        });
+
+        // Handle option selection
+        options.forEach(option => {
+            option.addEventListener('click', function() {
+                // Remove selected class from all options
+                options.forEach(opt => opt.classList.remove('selected'));
+                
+                // Add selected class to clicked option
+                this.classList.add('selected');
+                
+                // Save the answer
+                const answer = this.getAttribute('data-value') === 'stimmt';
+                answers[currentQuestionIndex] = answer;
+                
+                // If it's "stimmt", increment the category counter
+                if (answer) {
+                    const category = questions[currentQuestionIndex].category;
+                    categoryCounts[category]++;
+                }
+                
+                // Short delay before moving to next question
+                setTimeout(() => {
+                    if (currentQuestionIndex < totalQuestions - 1) {
+                        currentQuestionIndex++;
+                        showQuestion(currentQuestionIndex);
+                    } else {
+                        showResults();
+                    }
+                }, 300);
+            });
+        });
+
+        // Function to show a question
+        function showQuestion(index) {
+            const question = questions[index];
+            questionText.textContent = question.text;
+            currentQuestionSpan.textContent = index + 1;
+            
+            // Reset option selection
+            options.forEach(opt => opt.classList.remove('selected'));
+            
+            // Update progress
+            const progress = ((index + 1) / totalQuestions) * 100;
+            progressBar.style.width = `${progress}%`;
+            progressPercentage.textContent = Math.round(progress);
+        }
+
+        // Function to show results
+        function showResults() {
+            questionContainer.style.display = 'none';
+            resultsSection.style.display = 'block';
+            
+            // Calculate the scores as percentages of total possible for each category
+            const categoryMaxValues = {};
+            questions.forEach(q => {
+                if (!categoryMaxValues[q.category]) {
+                    categoryMaxValues[q.category] = 0;
+                }
+                categoryMaxValues[q.category]++;
+            });
+            
+            // Normalize scores to 0-10 scale
+            const normalizedScores = {};
+            for (const category in categoryCounts) {
+                const maxPossible = categoryMaxValues[category] || 1; // Avoid division by zero
+                // Scale to 0-10
+                normalizedScores[category] = Math.round((categoryCounts[category] / maxPossible) * 10);
+            }
+            
+            // Update the chart
+            updateChart(normalizedScores);
+        }
+
+        // Function to update the chart with scores
+        function updateChart(scores) {
+            for (const category in scores) {
+                const barElement = document.getElementById(`${category.toLowerCase()}-bar`);
+                const valueElement = document.getElementById(`${category.toLowerCase()}-value`);
+                
+                if (barElement && valueElement) {
+                    // Set width based on score (0-10 scale)
+                    const percentage = scores[category] * 10; // Convert to percentage (0-100)
+                    
+                    // Animate the bar filling
+                    setTimeout(() => {
+                        barElement.style.width = `${percentage}%`;
+                        valueElement.textContent = scores[category];
+                    }, 200);
+                }
+            }
+        }
+
+        // Immediately disable the start button if the checkbox is unchecked initially
+        startBtn.disabled = !understandCheckbox.checked;
+        if (!understandCheckbox.checked) {
+            startBtn.style.backgroundColor = 'var(--gray)';
+            startBtn.style.cursor = 'not-allowed';
+        }
+    </script>
+</body>
+</html>
